@@ -47,7 +47,7 @@ public class Paste {
      */
     public Paste(String id, String deletionKey) {
         this.id = id;
-        this.deletionKey = null;
+        this.deletionKey = deletionKey;
     }
 
     /**
