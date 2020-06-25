@@ -23,31 +23,19 @@
  */
 package org.kitteh.pastegg;
 
-@SuppressWarnings("CanBeFinal")
-public class PasteFile {
-    private final String id;
-    private final String name;
-    private final PasteContent content;
+/**
+ * Created by Narimm on 4/03/2020.
+ */
+public class InvalidPasteException extends RuntimeException {
+    private final String message;
 
-    public PasteFile(String id, String name, PasteContent content) {
-        this.id = id;
-        this.name = name;
-        this.content = content;
+    public InvalidPasteException(String message) {
+        this.message = message;
     }
 
-    public PasteFile(String name, PasteContent content) {
-        this(null, name, content);
+    @Override
+    public String getMessage() {
+        return message;
     }
 
-    public PasteContent getContent() {
-        return this.content;
-    }
-
-    public String getId() {
-        return this.id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
 }

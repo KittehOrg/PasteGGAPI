@@ -24,10 +24,13 @@
 package org.kitteh.pastegg;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * I'm a temporary class!
  */
 public class GsonProviderLol {
-    public static final Gson GSON = new Gson();
+    public static final Gson GSON = new GsonBuilder()
+          .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+          .create();
 }

@@ -24,13 +24,20 @@
 package org.kitteh.pastegg;
 
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
 import java.util.Optional;
 
 public class Paste {
     private final String id;
     private final String deletion_key;
     private final Visibility visibility;
-
+    private Date expires;
+    @SerializedName("created_at")
+    private Date createdAt;
+    @SerializedName("updated_at")
+    private Date updatedAt;
 
     /**
      * Constructs a paste without a deletion key.
@@ -40,22 +47,33 @@ public class Paste {
     public Paste(String id) {
         this(id, null);
     }
-
     /**
      * Constructs a paste.
      *
-     * @param id id
+     * @param id          id
      * @param deletionKey deletion key, or null
      */
     public Paste(String id, String deletionKey) {
-        this(id,deletionKey,Visibility.PUBLIC);
+        this(id, deletionKey, Visibility.PUBLIC);
     }
-
     public Paste(String id, String deletionKey, Visibility visibility) {
         this.id = id;
         this.deletion_key = deletionKey;
         this.visibility = visibility;
     }
+
+    public Date getExpires() {
+        return expires;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
     /**
      * Gets the paste's id.
      *

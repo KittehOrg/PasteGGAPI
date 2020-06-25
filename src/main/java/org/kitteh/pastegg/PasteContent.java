@@ -81,8 +81,10 @@ public class PasteContent {
         }
     }
 
-    private ContentType format;
-    private String value;
+    @SuppressWarnings("unused")
+    private final ContentType format;
+    @SuppressWarnings("unused")
+    private final String value;
 
     private transient String processedValue;
 

@@ -40,6 +40,7 @@ public class PasteBuilder {
         private Paste result;
         private String message;
 
+
         public Optional<Paste> getPaste() {
             return Optional.ofNullable(this.result);
         }
@@ -47,13 +48,19 @@ public class PasteBuilder {
         public Optional<String> getMessage() {
             return Optional.ofNullable(this.message);
         }
+
+        public String getStatus() {
+            return status;
+        }
     }
 
     private Visibility visibility = Visibility.getDefault();
     private String name;
+    private String expires = null;
+    private boolean debug = false;
+    private String apiKey;
     @SuppressWarnings({"TypeMayBeWeakened", "MismatchedQueryAndUpdateOfCollection"})
-    private List<PasteFile> files = new LinkedList<>();
-    private String expires;
+    private final List<PasteFile> files = new LinkedList<>();
 
     public PasteBuilder name(String name) {
         this.name = name;
@@ -66,24 +73,51 @@ public class PasteBuilder {
         return this;
     }
 
+    public PasteBuilder setApiKey(String key) {
+        this.apiKey = key;
+        return this;
+    }
+
     public PasteBuilder visibility(Visibility visibility) {
         this.visibility = visibility;
         return this;
     }
+
+    /**
+     * debug the connection.
+     * @param debug boolean
+     * @return PasteBuilder
+     */
+    public PasteBuilder debug(boolean debug) {
+        this.debug = debug;
+        return this;
+    }
+
 
     public PasteBuilder addFile(PasteFile file) {
         files.add(file);
         return this;
     }
 
-    public PasteResult build() {
+    public PasteResult build() throws InvalidPasteException {
+        if (visibility == Visibility.PRIVATE && apiKey == null) {
+            throw new InvalidPasteException("No API Key Provided for Private Paste...");
+        }
         String toString = GsonProviderLol.GSON.toJson(this);
         try {
-            String result = ConnectionProvider.processPasteRequest(toString);
-            return GsonProviderLol.GSON.fromJson(result, PasteResult.class);
+            String result = ConnectionProvider.processPasteRequest(apiKey, toString,debug);
+            PasteResult pasteResult = GsonProviderLol.GSON.fromJson(result, PasteResult.class);
+            if (pasteResult.getPaste().isPresent()) {
+                PasteManager.addPaste(pasteResult.getPaste().get());
+            }
+            return pasteResult;
         } catch (IOException e) {
-            e.printStackTrace();
+
+            InvalidPasteException invalid =
+                  new InvalidPasteException("Paste could not be sent to past.gg: "
+                        + e.getMessage());
+            invalid.addSuppressed(e);
+            throw invalid;
         }
-        return null;
     }
 }
